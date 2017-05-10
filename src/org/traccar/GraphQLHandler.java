@@ -23,10 +23,11 @@ public class GraphQLHandler extends WebDataHandler {
   }
 
   private synchronized void tryLogin() {
+    String loginBody = "{ \"query\":\"" + loginRoute.replace("\"", "\\\"") + "\"}";
     ListenableFuture<Object> execute =
         Context.getAsyncHttpClient()
             .preparePost(postUrl)
-            .setBody(loginRoute)
+            .setBody(loginBody)
             .execute(
                 new AsyncHandler<Object>() {
 
@@ -45,6 +46,10 @@ public class GraphQLHandler extends WebDataHandler {
                   @Override
                   public STATE onStatusReceived(HttpResponseStatus httpResponseStatus)
                       throws Exception {
+                    if (httpResponseStatus.getStatusCode() != HttpServletResponse.SC_OK) {
+                      Log.error("log in failed");
+                      return STATE.ABORT;
+                    }
                     return STATE.CONTINUE;
                   }
 
@@ -70,20 +75,18 @@ public class GraphQLHandler extends WebDataHandler {
   protected Position handlePosition(Position position) {
     final AsyncHttpClient.BoundRequestBuilder requestBuilder =
         Context.getAsyncHttpClient().preparePost(postUrl);
-    String queryString = formatRequest(position);
+    String insertMutation = formatRequest(position);
     if (sessionCookie != null) {
       requestBuilder.addCookie(sessionCookie);
     }
-    requestBuilder.setBody(queryString);
+    insertMutation = "{ \"query\":\"" + insertMutation.replace("\"", "\\\"") + "\"}";
+    requestBuilder.setBody(insertMutation);
 
     requestBuilder.execute(
         new AsyncHandler<Object>() {
           @Override
           public void onThrowable(Throwable throwable) {
             Log.error(throwable.getMessage());
-            //            if (throwable instanceof ConnectionException) {
-            //              GraphQLHandler.this.sessionCookie = null;
-            //            }
           }
 
           @Override

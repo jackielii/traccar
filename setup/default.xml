@@ -23,25 +23,27 @@
     <entry key='graphql.url'>http://localhost:8080/graphql</entry>
     <entry key='graphql.sessionCookieKey'>JSESSIONID</entry>
     <entry key='graphql.loginRoute'>
-        {query: "{mutation login{User{login(username:\"{username}\",password:\"{password}\"){_id}}}}"}
+        mutation login{User{login(username:"{username}",password:"{password}"){_id}}}
     </entry>
     <entry key='graphql.postBody'>
-        {name}
-        {uniqueId}
-        {deviceId}
-        {protocol}
-        {deviceTime}
-        {fixTime}
-        {valid}
-        {latitude}
-        {longitude}
-        {altitude}
-        {speed}
-        {course}
-        {statusCode}
-        {address}
-        {attributes}
-        {gprmc}
+        mutation{Data{Truck{positions{insert(items:[{
+        name:       "{name}",
+        uniqueId:   "{uniqueId}",
+        deviceId:   "{deviceId}",
+        protocol:   "{protocol}",
+        deviceTime: {deviceTime},
+        fixTime:    {fixTime},
+        valid:      {valid},
+        latitude:   {latitude},
+        longitude:  {longitude},
+        altitude:   {altitude},
+        speed:      {speed},
+        course:     {course},
+        statusCode: "{statusCode}",
+        address:    "{address}",
+        attributes: "{attributes}",
+        gprmc:      "{gprmc}",
+        }])}}}}
     </entry>
 
     <entry key='event.enable'>true</entry>
