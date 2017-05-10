@@ -63,6 +63,8 @@ public abstract class BasePipelineFactory implements ChannelPipelineFactory {
     private IgnitionEventHandler ignitionEventHandler;
     private MaintenanceEventHandler maintenanceEventHandler;
 
+    private GraphQLHandler graphqlHandler;
+
     private static final class OpenChannelHandler extends SimpleChannelHandler {
 
         private final TrackerServer server;
@@ -163,6 +165,16 @@ public abstract class BasePipelineFactory implements ChannelPipelineFactory {
             ignitionEventHandler = new IgnitionEventHandler();
             maintenanceEventHandler = new MaintenanceEventHandler();
         }
+
+        if (Context.getConfig().getBoolean(("graphql.enable"))) {
+            graphqlHandler = new GraphQLHandler(
+                Context.getConfig().getString("graphql.url"),
+                Context.getConfig().getString("graphql.postBody"),
+                Context.getConfig().getString("graphql.loginRoute"),
+                Context.getConfig().getString("graphql.username", ""),
+                Context.getConfig().getString("graphql.password", "")
+            );
+        }
     }
 
     protected abstract void addSpecificHandlers(ChannelPipeline pipeline);
@@ -215,6 +227,10 @@ public abstract class BasePipelineFactory implements ChannelPipelineFactory {
 
         if (Context.getConfig().getBoolean("forward.enable")) {
             pipeline.addLast("webHandler", new WebDataHandler(Context.getConfig().getString("forward.url")));
+        }
+
+        if (graphqlHandler != null) {
+            pipeline.addLast("graphqlHanlder", graphqlHandler);
         }
 
         if (commandResultEventHandler != null) {

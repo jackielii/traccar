@@ -15,13 +15,7 @@
  */
 package org.traccar.helper;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.DailyRollingFileAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.*;
 import org.apache.log4j.varia.NullAppender;
 import org.jboss.netty.logging.AbstractInternalLogger;
 import org.jboss.netty.logging.InternalLogger;
@@ -65,6 +59,9 @@ public final class Log {
 
         logger = Logger.getLogger(LOGGER_NAME);
         logger.addAppender(appender);
+        if (config.getBoolean("logger.std")) {
+            logger.addAppender(new ConsoleAppender(layout, "System.out"));
+        }
         logger.setLevel(Level.toLevel(config.getString("logger.level"), Level.ALL));
 
         // Workaround for "Bug 745866 - (EDG-45) Possible netty logging config problem"

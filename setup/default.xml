@@ -5,6 +5,7 @@
 <properties>
 
     <!-- SERVER CONFIG -->
+    <entry key='config.useEnvironmentVariables'>true</entry>
 
     <entry key='web.enable'>true</entry>
     <entry key='web.port'>8082</entry>
@@ -14,8 +15,34 @@
     <entry key='geocoder.type'>google</entry>
 
     <entry key='logger.enable'>true</entry>
+    <entry key='logger.std'>true</entry>
     <entry key='logger.level'>all</entry>
     <entry key='logger.file'>./logs/tracker-server.log</entry>
+
+    <entry key='graphql.enable'>true</entry>
+    <entry key='graphql.url'>http://localhost:8080/graphql</entry>
+    <entry key='graphql.sessionCookieKey'>JSESSIONID</entry>
+    <entry key='graphql.loginRoute'>
+        {query: "{mutation login{User{login(username:\"{username}\",password:\"{password}\"){_id}}}}"}
+    </entry>
+    <entry key='graphql.postBody'>
+        {name}
+        {uniqueId}
+        {deviceId}
+        {protocol}
+        {deviceTime}
+        {fixTime}
+        {valid}
+        {latitude}
+        {longitude}
+        {altitude}
+        {speed}
+        {course}
+        {statusCode}
+        {address}
+        {attributes}
+        {gprmc}
+    </entry>
 
     <entry key='event.enable'>true</entry>
 
